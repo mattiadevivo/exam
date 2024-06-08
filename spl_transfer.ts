@@ -5,6 +5,7 @@ import {
   PublicKey,
   TransactionSignature,
   Keypair,
+  LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
 import key from "./key.json";
 import tokenaddress from "./tokenaddress.json";
@@ -55,5 +56,11 @@ const transferToken = async (
   const tokenPublicKey = new PublicKey(tokenaddress);
   const to = Keypair.generate();
   console.log("To: ", to.publicKey.toBase58());
-  await transferToken(connection, keypair, to, tokenPublicKey, 1);
+  await transferToken(
+    connection,
+    keypair,
+    to,
+    tokenPublicKey,
+    1 * LAMPORTS_PER_SOL
+  );
 })();
