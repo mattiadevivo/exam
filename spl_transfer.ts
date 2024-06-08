@@ -15,28 +15,34 @@ import { cluster } from "./commons";
  *
  * @param {Connection} connection - The connection to the Solana network.
  * @param {Signer} sender - The signer of the transaction.
- * @param {PublicKey} tokenAccountReceiver - The public key of the receiver's account.
+ * @param {PublicKey} receiver - The public key of the receiver's account.
  * @param {number} amount - The amount of tokens to transfer.
  * @return {Promise<TransactionSignature>} A promise containing the transaction hash.
  */
 const transferToken = async (
   connection: Connection,
   sender: Signer,
-  tokenAccountReceiver: PublicKey,
-  mint: PublicKey,
+  receiver: Signer,
+  tokenPublicAddress: PublicKey,
   amount: number
 ): Promise<TransactionSignature> => {
-  const tokenAccount = await getOrCreateAssociatedTokenAccount(
+  const senderTokenAccount = await getOrCreateAssociatedTokenAccount(
     connection,
     sender,
-    mint,
-    tokenAccountReceiver
+    tokenPublicAddress,
+    sender.publicKey
+  );
+  const receiverTokenAccount = await getOrCreateAssociatedTokenAccount(
+    connection,
+    sender,
+    tokenPublicAddress,
+    receiver.publicKey
   );
   return transfer(
     connection,
     sender,
-    sender.publicKey,
-    tokenAccountReceiver,
+    senderTokenAccount.address,
+    receiverTokenAccount.address,
     sender,
     amount
   );
@@ -49,5 +55,5 @@ const transferToken = async (
   const tokenPublicKey = new PublicKey(tokenaddress);
   const to = Keypair.generate();
   console.log("To: ", to.publicKey.toBase58());
-  await transferToken(connection, keypair, to.publicKey, tokenPublicKey, 1);
+  await transferToken(connection, keypair, to, tokenPublicKey, 1);
 })();
