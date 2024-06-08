@@ -1,0 +1,36 @@
+{
+  "name": "masterz-solana-exam",
+  "version": "1.0.0",
+  "description": "MasterZ Solana Exam",
+  "main": "app.ts",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "testnet": "solana-test-validator",
+    "test": "npm run build:ts && tsc -p test/tsconfig.json && c8 node --test -r ts-node/register test/**/*.ts",
+    "start": "npm run build:ts && fastify start -l info dist/app.js",
+    "build:ts": "tsc",
+    "watch:ts": "tsc -w",
+    "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
+    "dev:start": "node dist/app.js"
+  },
+  "keywords": [
+    "solana",
+    "web3"
+  ],
+  "author": "Mattia De Vivo <mattiadevivo@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.4.4",
+    "c8": "^9.0.0",
+    "concurrently": "^8.2.2",
+    "ts-node": "^10.4.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.6",
+    "@solana/web3.js": "^1.92.2",
+    "dotenv": "^16.4.5"
+  }
+}
